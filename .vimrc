@@ -219,6 +219,7 @@ autocmd FileType python setlocal omnifunc=jedi#completions
 if !exists('g:neocomplete#sources#omni#input_patterns')
   let g:neocomplete#sources#omni#input_patterns = {}
 endif
+set completeopt-=preview
 
 " Options for FastFold
 let g:fastfold_savehook = 1
