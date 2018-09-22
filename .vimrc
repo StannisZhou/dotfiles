@@ -30,6 +30,9 @@ Plug 'lervag/vimtex'
 Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }
 Plug 'cjrh/vim-conda'
 Plug 'nathangrigg/vim-beancount'
+Plug 'Shougo/unite.vim'
+Plug 'devjoe/vim-codequery'
+Plug 'mileszs/ack.vim'
 " Initialize plugin system
 call plug#end()
 
@@ -181,7 +184,7 @@ let g:notes_suffix = '.txt'
 let g:notes_title_sync = 'change_title'
 nnoremap <Leader>i :Note index<CR>
 nnoremap <Leader>gf :silent !open "<cfile>" &<CR>
-nnoremap <Leader>gt :silent !texmacs <cfile> &<CR>
+nnoremap <Leader>gt :silent !/Applications/TeXmacs-1.99.6.app/Contents/MacOS/TeXmacs <cfile> &<CR>
 nnoremap <Leader>gg vi"y:silent !open "<C-r>"" &<CR>
 
 " Shortcuts for inserting date and time
@@ -273,3 +276,8 @@ let g:markdown_fold_style = 'nested'
 " Options for getting the right path
 set shell=bash  " avoids munging PATH under zsh
 let g:is_bash=1 " default shell syntax
+
+" Options for codequery
+let g:codequery_enable_auto_clean_languages = ['python']
+let g:codequery_trigger_build_db_when_db_not_found = 1
+nnoremap <space><CR> :CodeQuery Symbol<CR>
