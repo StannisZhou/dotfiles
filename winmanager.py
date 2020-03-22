@@ -17,19 +17,20 @@
 #                                                                          #
 ############################################################################
 
-import sys
-import os
 import commands
-import pickle
 import ConfigParser
 import math
+import os
+import pickle
+import sys
 
 
 def initconfig():
     rcfile = os.getenv('HOME') + "/.stilerrc"
     if not os.path.exists(rcfile):
         cfg = open(rcfile, 'w')
-        cfg.write("""#Tweak these values
+        cfg.write(
+            """#Tweak these values
 [default]
 BottomPadding = 0
 TopPadding = 0
@@ -39,7 +40,8 @@ WinTitle = 21
 WinBorder = 1
 MwFactor = 0.65
 TempFile = /tmp/tile_winlist
-""")
+"""
+        )
         cfg.close()
 
     config = ConfigParser.RawConfigParser()
@@ -48,7 +50,9 @@ TempFile = /tmp/tile_winlist
 
 
 def get_screen_size():
-    s = commands.getoutput('''xdpyinfo | grep 'dimension' | awk -F: '{ print $2 }' | awk '{ print $1 }' ''')
+    s = commands.getoutput(
+        '''xdpyinfo | grep 'dimension' | awk -F: '{ print $2 }' | awk '{ print $1 }' '''
+    )
     (x, y) = s.split('x')
     return (int(x), int(y))
 
@@ -93,13 +97,18 @@ def initialize():
         win_filtered.append(win)
 
     for desk in desk_list:
-        win_list[desk] = map(lambda y: hex(int(y.split()[0], 16)), filter(lambda x: x.split()[1] == desk, win_filtered))
+        win_list[desk] = map(
+            lambda y: hex(int(y.split()[0], 16)),
+            filter(lambda x: x.split()[1] == desk, win_filtered),
+        )
 
     return (desktop, orig_x, orig_y, width, height, win_list)
 
 
 def get_active_window():
-    return str(hex(int(commands.getoutput("xdotool getactivewindow 2>/dev/null").split()[0])))
+    return str(
+        hex(int(commands.getoutput("xdotool getactivewindow 2>/dev/null").split()[0]))
+    )
 
 
 def store(object, file):
@@ -113,12 +122,12 @@ def retrieve(file):
         with open(file, 'r+') as f:
             obj = pickle.load(f)
         f.close()
-        return(obj)
+        return obj
     except:
         f = open(file, 'w')
         f.close
         dict = {}
-        return (dict)
+        return dict
 
 
 # Get all global variables
@@ -146,15 +155,17 @@ def get_simple_tile(wincount):
         layout.append((OrigX, OrigY, MaxWidth, MaxHeight - WinTitle - WinBorder))
         return layout
     else:
-        layout.append((OrigX,OrigY,int(MaxWidth*MwFactor),MaxHeight-WinTitle-WinBorder))
+        layout.append(
+            (OrigX, OrigY, int(MaxWidth * MwFactor), MaxHeight - WinTitle - WinBorder)
+        )
 
-    x=OrigX + int((MaxWidth*MwFactor)+(2*WinBorder))
-    width=int((MaxWidth*(1-MwFactor))-2*WinBorder)
-    height=int(MaxHeight/rows - WinTitle-WinBorder)
+    x = OrigX + int((MaxWidth * MwFactor) + (2 * WinBorder))
+    width = int((MaxWidth * (1 - MwFactor)) - 2 * WinBorder)
+    height = int(MaxHeight / rows - WinTitle - WinBorder)
 
-    for n in range(0,rows):
-        y= OrigY+int((MaxHeight/rows)*(n))
-        layout.append((x,y,width,height))
+    for n in range(0, rows):
+        y = OrigY + int((MaxHeight / rows) * (n))
+        layout.append((x, y, width, height))
 
     return layout
 
@@ -162,11 +173,11 @@ def get_simple_tile(wincount):
 def get_vertical_tile(wincount):
     layout = []
     y = OrigY
-    width = int(MaxWidth/wincount)
+    width = int(MaxWidth / wincount)
     height = MaxHeight - WinTitle - WinBorder
-    for n in range(0,wincount):
-        x= OrigX + n * width
-        layout.append((x,y,width,height))
+    for n in range(0, wincount):
+        x = OrigX + n * width
+        layout.append((x, y, width, height))
 
     return layout
 
@@ -174,11 +185,11 @@ def get_vertical_tile(wincount):
 def get_horiz_tile(wincount):
     layout = []
     x = OrigX
-    height = int(MaxHeight/wincount - WinTitle - WinBorder)
+    height = int(MaxHeight / wincount - WinTitle - WinBorder)
     width = MaxWidth
-    for n in range(0,wincount):
-        y= OrigY + int((MaxHeight/wincount)*(n))
-        layout.append((x,y,width,height))
+    for n in range(0, wincount):
+        y = OrigY + int((MaxHeight / wincount) * (n))
+        layout.append((x, y, width, height))
 
     return layout
 
@@ -189,32 +200,52 @@ def get_max_all(wincount):
     y = OrigY
     height = MaxHeight - WinTitle - WinBorder
     width = MaxWidth
-    for n in range(0,wincount):
-        layout.append((x,y,width,height))
+    for n in range(0, wincount):
+        layout.append((x, y, width, height))
 
     return layout
 
 
-def move_active(PosX,PosY,Width,Height):
-    command =  " wmctrl -r :ACTIVE: -e 0," + str(PosX) + "," + str(PosY)+ "," + str(Width) + "," + str(Height)
+def move_active(PosX, PosY, Width, Height):
+    command = (
+        " wmctrl -r :ACTIVE: -e 0,"
+        + str(PosX)
+        + ","
+        + str(PosY)
+        + ","
+        + str(Width)
+        + ","
+        + str(Height)
+    )
     os.system(command)
 
 
 def unmaximize_one(windowid):
-    command =  " wmctrl -i -r " + windowid +  " -bremove,maximized_vert,maximized_horz"
+    command = " wmctrl -i -r " + windowid + " -bremove,maximized_vert,maximized_horz"
     os.system(command)
 
 
 def maximize_one(windowid):
-    command =  " wmctrl -i -r " + windowid +  " -badd,maximized_vert,maximized_horz"
+    command = " wmctrl -i -r " + windowid + " -badd,maximized_vert,maximized_horz"
     os.system(command)
 
 
-def move_window(windowid,PosX,PosY,Width,Height):
+def move_window(windowid, PosX, PosY, Width, Height):
     # Unmaximize window
     unmaximize_one(windowid)
     # Now move it
-    command =  " wmctrl -i -r " + windowid +  " -e 0," + str(PosX) + "," + str(PosY)+ "," + str(Width) + "," + str(Height)
+    command = (
+        " wmctrl -i -r "
+        + windowid
+        + " -e 0,"
+        + str(PosX)
+        + ","
+        + str(PosY)
+        + ","
+        + str(Width)
+        + ","
+        + str(Height)
+    )
     os.system(command)
     command = "wmctrl -i -r " + windowid + " -b remove,hidden,shaded"
     os.system(command)
@@ -265,7 +296,7 @@ def right_three_quarter():
     raise_window(":ACTIVE:")
 
 
-def compare_win_list(newlist,oldlist):
+def compare_win_list(newlist, oldlist):
     templist = []
     for window in oldlist:
         if newlist.count(window) != 0:
@@ -286,16 +317,16 @@ def create_win_list():
         if Windows == OldWindows:
             pass
         else:
-            Windows = compare_win_list(Windows,OldWindows)
+            Windows = compare_win_list(Windows, OldWindows)
 
     return Windows
 
 
-def arrange(layout,windows):
-    for win , lay  in zip(windows,layout):
-        move_window(win,lay[0],lay[1],lay[2],lay[3])
-    WinList[Desktop]=windows
-    store(WinList,TempFile)
+def arrange(layout, windows):
+    for win, lay in zip(windows, layout):
+        move_window(win, lay[0], lay[1], lay[2], lay[3])
+    WinList[Desktop] = windows
+    store(WinList, TempFile)
 
 
 def maximize_active():
@@ -303,20 +334,29 @@ def maximize_active():
 
 
 def maximize():
-    Width=MaxWidth
-    Height=MaxHeight - WinTitle -WinBorder
-    PosX=LeftPadding
-    PosY=TopPadding
-    move_active(PosX,PosY,Width,Height)
+    Width = MaxWidth
+    Height = MaxHeight - WinTitle - WinBorder
+    PosX = LeftPadding
+    PosY = TopPadding
+    move_active(PosX, PosY, Width, Height)
     raise_window(":ACTIVE:")
 
 
 def bring_app_front(app, command):
-    s = int(commands.getoutput('wmctrl -l | grep -c "{}"'.format(app)))
-    if s == 1:
-        os.system('wmctrl -a "{}"'.format(app))
-    else:
+    pid_outputs = commands.getoutput('pidof {}'.format(app))
+    print(pid_outputs)
+    if len(pid_outputs) == 0:
         os.system('{} &'.format(command))
+    else:
+        if app == 'chrome':
+            os.system('wmctrl -a "chrome"')
+        else:
+            pid = pid_outputs.split(' ')[0]
+            win_id = ' '.join(
+                commands.getoutput('wmctrl -l -p | grep "{}"'.format(pid)).split()[4:]
+            )
+            print(win_id)
+            os.system('wmctrl -a "{}"'.format(win_id))
 
 
 if sys.argv[1] == "left":
@@ -330,8 +370,12 @@ elif sys.argv[1] == "right_three_quarter":
 elif sys.argv[1] == "maximize":
     maximize()
 elif sys.argv[1] == "vim":
-    bring_app_front('GVIM', 'gvim')
+    bring_app_front('gvim', 'gvim')
 elif sys.argv[1] == "chrome":
-    bring_app_front('Chrome', 'google-chrome')
+    bring_app_front('chrome', 'google-chrome')
 elif sys.argv[1] == "terminal":
-    bring_app_front('Tilix', 'tilix')
+    bring_app_front('tilix', 'tilix')
+elif sys.argv[1] == "zathura":
+    bring_app_front('zathura', 'zathura')
+elif sys.argv[1] == "texmacs":
+    bring_app_front('texmacs.bin', 'texmacs')

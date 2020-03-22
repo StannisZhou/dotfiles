@@ -1,0 +1,130 @@
+# For the benefit of emacs users: -*- shell-script -*-
+###########################
+# xbindkeys configuration #
+###########################
+#
+# Version: 1.8.6
+#
+# If you edit this file, do not forget to uncomment any lines
+# that you change.
+# The pound(#) symbol may be used anywhere for comments.
+#
+# To specify a key, you can use 'xbindkeys --key' or
+# 'xbindkeys --multikey' and put one of the two lines in this file.
+#
+# The format of a command line is:
+#    "command to start"
+#       associated key
+#
+#
+# A list of keys is in /usr/include/X11/keysym.h and in
+# /usr/include/X11/keysymdef.h
+# The XK_ is not needed.
+#
+# List of modifier:
+#   Release, Control, Shift, Mod1 (Alt), Mod2 (NumLock),
+#   Mod3 (CapsLock), Mod4, Mod5 (Scroll).
+#
+
+# The release modifier is not a standard X modifier, but you can
+# use it if you want to catch release events instead of press events
+
+# By defaults, xbindkeys does not pay attention with the modifiers
+# NumLock, CapsLock and ScrollLock.
+# Uncomment the lines above if you want to pay attention to them.
+
+#keystate_numlock = enable
+#keystate_capslock = enable
+#keystate_scrolllock= enable
+
+# Examples of commands:
+
+# "xbindkeys_show" 
+#   control+shift + q
+
+# set directly keycode (here control + f with my keyboard)
+#"xterm"
+#  c:41 + m:0x4
+
+# specify a mouse button
+#"xterm"
+#  control + b:2
+
+#"xterm -geom 50x20+20+20"
+#   Shift+Mod2+alt + s
+#
+## set directly keycode (here control+alt+mod2 + f with my keyboard)
+#"xterm"
+#  alt + c:0x29 + m:4 + mod2
+#
+## Control+Shift+a  release event starts rxvt
+#"rxvt"
+#  release+control+shift + a
+#
+## Control + mouse button 2 release event starts rxvt
+#"rxvt"
+#  Control + b:2 + Release
+
+"xvkbd -xsendevent -text "\C\t""
+   control + j
+
+"xvkbd -xsendevent -text "\C\[ISO_Left_Tab]""
+   control + k
+
+"xvkbd -xsendevent -text "\[Left]""
+   alt + h
+
+"xvkbd -xsendevent -text "\[Right]""
+   alt + l
+
+"xvkbd -xsendevent -text "\[Down]""
+   alt + j
+
+"xvkbd -xsendevent -text "\[Up]""
+   alt + k
+
+"xvkbd -xsendevent -text "\[Home]""
+   alt + shift + h
+
+"xvkbd -xsendevent -text "\[End]""
+   alt + shift + l
+
+"slack"
+   release+Mod4+Super_L + r
+
+"winmanager.py terminal"
+   release+Mod4+Super_L + t
+
+"winmanager.py chrome"
+   release+Mod4+Super_L + c
+
+"winmanager.py vim"
+   release+Mod4+Super_L + v
+
+"winmanager.py zathura"
+   release+Mod4+Super_L + z
+
+"winmanager.py texmacs"
+   release+Mod4+Super_L + m
+
+"winmanager.py middle"
+   release+Mod4+Super_L + w
+
+"winmanager.py left"
+   release+Mod4+Super_L + d
+
+"winmanager.py right"
+   release+Mod4+Super_L + g
+
+"winmanager.py maximize"
+   release+Mod4+Super_L + f
+
+"winmanager.py middle"
+   release+Mod4+Super_L + w
+
+"winmanager.py right_three_quarter"
+   release+Mod4+Super_L + l
+
+##################################
+# End of xbindkeys configuration #
+##################################

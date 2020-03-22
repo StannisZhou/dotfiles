@@ -11,7 +11,6 @@ Plug 'danro/rename.vim'
 Plug 'vim-syntastic/syntastic'
 Plug 'xolox/vim-notes'
 Plug 'tpope/vim-eunuch'
-Plug 'vim-scripts/taglist.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'xolox/vim-misc'
 Plug 'mhinz/vim-startify'
@@ -33,11 +32,13 @@ Plug 'nathangrigg/vim-beancount'
 Plug 'Shougo/unite.vim'
 Plug 'devjoe/vim-codequery'
 Plug 'mileszs/ack.vim'
+Plug 'dyng/ctrlsf.vim'
+Plug 'wincent/command-t'
+Plug 'junegunn/fzf'
 " Initialize plugin system
 call plug#end()
 
 
-let macvim_skip_colorscheme=1
 let mapleader=","
 nmap <silent> <leader>ov :e $MYVIMRC<CR>
 nmap <silent> <leader>sv :so $MYVIMRC<CR>
@@ -45,7 +46,6 @@ set nocompatible
 
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
-
 set nobackup
 set noswapfile
 set history=1000		" keep 1000 lines of command line history
@@ -111,8 +111,9 @@ set ignorecase
 set smartcase
 " automatically read changed files
 set autoread
+au CursorHold * checktime 
 " Gui options
-set guifont=Droid\ Sans\ Mono\ for\ Powerline:h22
+set guifont=Ubuntu\ Mono\ 22
 set guioptions-=m
 set guioptions-=T
 set guioptions-=r
@@ -127,8 +128,8 @@ nnoremap <Leader>= mqgg<S-v>G=`q:delm q<CR>
 "Options for minibufexpl
 let g:miniBufExplBuffersNeeded = 1
 nnoremap <Leader>m :MBEbd<CR>
-noremap <C-TAB> :bnext<CR>
-noremap <C-S-TAB> :bprevious<CR>
+noremap <C-TAB> <C-W>j
+noremap <C-S-TAB> <C-W>k
 noremap <C-J> <C-W>j
 noremap <C-K> <C-W>k
 noremap <C-H> <C-W>h
@@ -143,6 +144,7 @@ let g:SuperTabDefaultCompletionType = "context"
 
 " Options for EasyMotion
 let g:EasyMotion_leader_key = '<leader>'
+nmap <Leader>b <Plug>(easymotion-b)
 
 " Options for NERDTree
 map <C-n> :NERDTreeToggle<CR>
@@ -167,6 +169,8 @@ let g:pymode_run = 0
 let g:pymode_breakpoint = 0
 let g:pymode_lint_cwindow = 0
 let g:pymode_rope = 0
+let g:pymode_lint=0
+let g:pymode_lint_write = 0
 
 " Options for wrapping
 set wrap
@@ -183,22 +187,21 @@ let g:notes_directories = ['~/Dropbox/vim_notes/notes']
 let g:notes_suffix = '.txt'
 let g:notes_title_sync = 'change_title'
 nnoremap <Leader>i :Note index<CR>
-nnoremap <Leader>gf :silent !open "<cfile>" &<CR>
-nnoremap <Leader>gt :silent !/Applications/TeXmacs-1.99.6.app/Contents/MacOS/TeXmacs <cfile> &<CR>
-nnoremap <Leader>gg vi"y:silent !open "<C-r>"" &<CR>
+nnoremap <Leader>gf :silent !xdg-open "<cfile>" &<CR>
+nnoremap <Leader>gg vi"y:silent !xdg-open "<C-r>"" &<CR>
+nnoremap <Leader>gt :silent !/usr/local/bin/texmacs <cfile> &<CR>
 
 " Shortcuts for inserting date and time
 nnoremap <Leader>dt "=strftime("## %a %x %X %Z:")<CR>Po<CR><TAB>
 nnoremap <Leader>dm "=strftime("~/Dropbox/vim_notes/math_notes/math_%b_%d_%Y.tm")<CR>pF.
-
-" Options for taglist
-nnoremap <C-t> :TlistToggle<CR>
 
 " Options for SympylFold
 let g:SimpylFold_docstring_level = 3
 
 " Options for syntastic
 let g:syntastic_cpp_compiler_options = "-std=c++11 -Wall -Wextra -Wpedantic"
+let g:syntastic_python_checkers = ['python', 'flake8']
+let g:syntastic_python_flake8_args = '--ignore=E501'
 
 " Options for neocomplete
 " Use neocomplete.
@@ -263,7 +266,7 @@ let g:tex_flavor = "latex"
 autocmd Filetype tex inoremap <buffer> $ $$<esc>i
 
 " Options for vim-latex-live-preview
-let g:livepreview_previewer = 'open -a skim'
+let g:livepreview_previewer = 'xdg-open -a zathura'
 let g:livepreview_engine = 'latexmk -pdf'
 
 " Options for python-mode
@@ -281,3 +284,20 @@ let g:is_bash=1 " default shell syntax
 let g:codequery_enable_auto_clean_languages = ['python']
 let g:codequery_trigger_build_db_when_db_not_found = 1
 nnoremap <space><CR> :CodeQuery Symbol<CR>
+
+" Options for CtrlSF
+let g:ctrlsf_default_view_mode = 'normal'
+let g:ctrlsf_default_root = 'cwd'
+vmap <C-F> <Plug>CtrlSFVwordExec
+nmap <C-F> <Plug>CtrlSFPrompt
+
+" Options for searching
+let g:NERDTreeChDirMode = 2
+let g:CommandTTraverseSCM = 'dir'
+nmap <C-g> :NERDTreeFind<CR>
+
+" Options for using black
+" autocmd BufWritePost *.py :silent execute '!/home/stannis/black/venv3/bin/black -S --fast %:p | /home/stannis/black/venv3/bin/isort %:p | rsync -avzhe ssh %:p stannis@hq-rosgpu02:%:p'
+autocmd BufWritePost *.py :silent execute '!/home/stannis/black/venv3/bin/black -S --fast %:p | /home/stannis/black/venv3/bin/isort %:p'
+command Format execute '!/home/stannis/black/venv3/bin/black -S --fast %:p | /home/stannis/black/venv3/bin/isort %:p'
+command Sync execute '!rsync -avzhe ssh %:p stannis@10.224.61.28:%:p'

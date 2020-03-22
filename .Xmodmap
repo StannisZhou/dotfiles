@@ -1,0 +1,10 @@
+!Swap right control and right alt
+clear control
+remove Mod1 = Alt_R
+keycode 105 = Alt_R
+keycode 108 = Control_R
+add Control = Control_R
+add Mod1 = Alt_R
+
+!Swap vertical scrolling direction
+pointer = 1 2 3 5 4 6 7 8 9 10 11 12
