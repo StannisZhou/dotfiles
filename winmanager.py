@@ -343,20 +343,32 @@ def maximize():
 
 
 def bring_app_front(app, command):
-    pid_outputs = commands.getoutput('pidof {}'.format(app))
-    print(pid_outputs)
-    if len(pid_outputs) == 0:
+    workspace_id = commands.getoutput("wmctrl -d | grep '*' | cut -d ' ' -f1")
+    apps_within_workspace = commands.getoutput(
+        "wmctrl -l -p | grep ' {} '".format(workspace_id)
+    ).split('\n')
+    if len(apps_within_workspace) == 0:
         os.system('{} &'.format(command))
     else:
-        if app == 'chrome':
-            os.system('wmctrl -a "chrome"')
+        pid_to_win_id = {}
+        pid_in_workspace = set()
+        for workspace_app in apps_within_workspace:
+            pid = workspace_app.split()[2]
+            win_id = workspace_app.split()[0]
+            pid_to_win_id[pid] = win_id
+            pid_in_workspace.add(pid)
+
+        pid_for_app = set(commands.getoutput('pidof {}'.format(app)).split(' '))
+        common_pid = list(pid_in_workspace.intersection(pid_for_app))
+        print(pid_to_win_id)
+        print(pid_in_workspace)
+        print(pid_for_app)
+        print(common_pid)
+        if len(common_pid) == 0:
+            os.system('{} &'.format(command))
         else:
-            pid = pid_outputs.split(' ')[0]
-            win_id = ' '.join(
-                commands.getoutput('wmctrl -l -p | grep "{}"'.format(pid)).split()[4:]
-            )
-            print(win_id)
-            os.system('wmctrl -a "{}"'.format(win_id))
+            win_id = pid_to_win_id[common_pid[0]]
+            os.system('wmctrl -i -a "{}"'.format(win_id))
 
 
 if sys.argv[1] == "left":
@@ -379,3 +391,5 @@ elif sys.argv[1] == "zathura":
     bring_app_front('zathura', 'zathura')
 elif sys.argv[1] == "texmacs":
     bring_app_front('texmacs.bin', 'texmacs')
+elif sys.argv[1] == "files":
+    bring_app_front('nautilus', 'nautilus')
