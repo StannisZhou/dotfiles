@@ -36,6 +36,8 @@ Plug 'kassio/neoterm'
 Plug 'nikvdp/neomux'
 Plug 'preservim/tagbar'
 Plug 'dense-analysis/ale'
+Plug 'Yggdroot/indentLine'
+Plug 'pedrohdz/vim-yaml-folds'
 " Initialize plugin system
 call plug#end()
 
@@ -272,7 +274,7 @@ nmap <F8> :TagbarToggle<CR>
 
 " Options for ALE
 let g:ale_fixers = {'python': ['black', 'isort']}
-let g:ale_linters = {'python': ['flake8']}
+let g:ale_linters = {'python': ['flake8'], 'yaml': ['yamllint']}
 let g:ale_fix_on_save = 1
 let g:ale_python_black_executable='/home/stannis/black/venv3/bin/black'
 let ale_python_black_options='-S --fast'
@@ -280,3 +282,9 @@ let g:ale_python_isort_executable='/home/stannis/black/venv3/bin/isort'
 let g:ale_python_flake8_executable='/home/stannis/ros_ws_py3/src/real_world/py3_venv/bin/flake8'
 let g:ale_python_flake8_options='--ignore=E501,W503,E203'
 let g:ale_python_mypy_executable='/home/stannis/ros_ws_py3/src/real_world/py3_venv/bin/mypy'
+let g:ale_yaml_yamllint_executable='/home/stannis/miniconda3/bin/yamllint'
+let g:ale_yaml_yamllint_options='-d relaxed'
+
+" Options for editing YAML files
+autocmd FileType yaml setlocal ts=4 sts=4 sw=4 expandtab
+let g:indentLine_char_list = ['|', '¦', '┆', '┊']
