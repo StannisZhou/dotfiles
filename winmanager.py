@@ -345,30 +345,42 @@ def maximize():
 def bring_app_front(app, command):
     workspace_id = commands.getoutput("wmctrl -d | grep '*' | cut -d ' ' -f1")
     apps_within_workspace = commands.getoutput(
-        "wmctrl -l -p | grep ' {} '".format(workspace_id)
+        "wmctrl -l -p | grep '  {} '".format(workspace_id)
     ).split('\n')
     if len(apps_within_workspace) == 0:
         os.system('{} &'.format(command))
     else:
-        pid_to_win_id = {}
-        pid_in_workspace = set()
-        for workspace_app in apps_within_workspace:
-            pid = workspace_app.split()[2]
-            win_id = workspace_app.split()[0]
-            pid_to_win_id[pid] = win_id
-            pid_in_workspace.add(pid)
+        if app == 'fvim':
+            win_id = None
+            for workspace_app in apps_within_workspace:
+                if workspace_app.split()[-1] == 'FVim':
+                    win_id = workspace_app.split()[0]
+                    break
 
-        pid_for_app = set(commands.getoutput('pidof {}'.format(app)).split(' '))
-        common_pid = list(pid_in_workspace.intersection(pid_for_app))
-        print(pid_to_win_id)
-        print(pid_in_workspace)
-        print(pid_for_app)
-        print(common_pid)
-        if len(common_pid) == 0:
-            os.system('{} &'.format(command))
+            if win_id is None:
+                os.system('{} &'.format(command))
+            else:
+                os.system('wmctrl -i -a "{}"'.format(win_id))
         else:
-            win_id = pid_to_win_id[common_pid[0]]
-            os.system('wmctrl -i -a "{}"'.format(win_id))
+            pid_to_win_id = {}
+            pid_in_workspace = set()
+            for workspace_app in apps_within_workspace:
+                pid = workspace_app.split()[2]
+                win_id = workspace_app.split()[0]
+                pid_to_win_id[pid] = win_id
+                pid_in_workspace.add(pid)
+
+            pid_for_app = set(commands.getoutput('pidof {}'.format(app)).split(' '))
+            common_pid = list(pid_in_workspace.intersection(pid_for_app))
+            print(pid_to_win_id)
+            print(pid_in_workspace)
+            print(pid_for_app)
+            print(common_pid)
+            if len(common_pid) == 0:
+                os.system('{} &'.format(command))
+            else:
+                win_id = pid_to_win_id[common_pid[0]]
+                os.system('wmctrl -i -a "{}"'.format(win_id))
 
 
 if sys.argv[1] == "left":
@@ -382,7 +394,7 @@ elif sys.argv[1] == "right_three_quarter":
 elif sys.argv[1] == "maximize":
     maximize()
 elif sys.argv[1] == "vim":
-    bring_app_front('gvim', 'gvim')
+    bring_app_front('fvim', 'fvim')
 elif sys.argv[1] == "chrome":
     bring_app_front('chrome', 'google-chrome')
 elif sys.argv[1] == "terminal":

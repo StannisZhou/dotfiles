@@ -65,10 +65,10 @@
 #"rxvt"
 #  Control + b:2 + Release
 
-"xvkbd -xsendevent -text "\C\t""
+"xvkbd -xsendevent -text "\C\[Next]""
    control + j
 
-"xvkbd -xsendevent -text "\C\[ISO_Left_Tab]""
+"xvkbd -xsendevent -text "\C\[Prior]""
    control + k
 
 "xvkbd -xsendevent -text "\[Left]""
@@ -106,6 +106,9 @@
 
 "winmanager.py texmacs"
    release+Mod4+Super_L + m
+
+"winmanager.py files"
+   release+Mod4+Super_L + o
 
 "winmanager.py middle"
    release+Mod4+Super_L + w
