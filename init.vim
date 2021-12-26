@@ -19,7 +19,7 @@ Plug 'davidhalter/jedi-vim'
 Plug 'tmhedberg/SimpylFold'
 Plug 'vim-airline/vim-airline'
 Plug 'Konfekt/FastFold'
-Plug 'heavenshell/vim-pydocstring'
+Plug 'heavenshell/vim-pydocstring', { 'do': 'make install' }
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'lervag/vimtex'
@@ -38,6 +38,8 @@ Plug 'preservim/tagbar'
 Plug 'dense-analysis/ale'
 Plug 'Yggdroot/indentLine'
 Plug 'pedrohdz/vim-yaml-folds'
+Plug 'SirVer/ultisnips'
+Plug 'github/copilot.vim'
 " Initialize plugin system
 call plug#end()
 
@@ -105,8 +107,8 @@ set ignorecase
 set smartcase
 " automatically read changed files
 set autoread
-au CursorHold * :checktime 
-au FocusGained * :checktime
+autocmd FocusGained,BufEnter,CursorHold,CursorHoldI * checktime
+autocmd FileChangedShellPost * echohl WarningMsg | echo "File changed on disk. Buffer reloaded." | echohl None
 
 " Gui options
 set guifont=Monospace:h22
@@ -122,8 +124,9 @@ let g:miniBufExplBuffersNeeded = 1
 nnoremap <Leader>m :MBEbd<CR>
 noremap <C-PageDown> <C-W>j
 noremap <C-PageUp> <C-W>k
-noremap <C-h> <C-W>h
-noremap <C-l> <C-W>l
+noremap <C-H> <C-W>h
+noremap <C-L> <C-W>l
+
 
 " Options for SuperTab
 let g:SuperTabDefaultCompletionType = "context"
@@ -176,11 +179,12 @@ autocmd FileType notes setlocal nospell tabstop=3 shiftwidth=3 softtabstop=3 exp
 nnoremap <Leader>i :Note index<CR>
 nnoremap <Leader>gf :silent !xdg-open "<cfile>" &<CR>
 nnoremap <Leader>gg vi"y:silent !xdg-open "<C-r>"" &<CR>
-nnoremap <Leader>gt :silent !/usr/local/bin/texmacs <cfile> &<CR>
+" nnoremap <Leader>gt :silent !/usr/local/bin/texmacs <cfile> &<CR>
+nnoremap <leader>gt :e <cfile><cr>
 
 " Shortcuts for inserting date and time
 nnoremap <Leader>dt "=strftime("## %a %x %X %Z:")<CR>Po<CR><TAB>
-nnoremap <Leader>dm "=strftime("~/Dropbox/vim_notes/math_notes/math_%b_%d_%Y.tm")<CR>pF.
+nnoremap <Leader>dm "=strftime("~/Dropbox/vim_notes/math_notes/math_%b_%d_%Y.tex")<CR>pF.
 
 " Options for SympylFold
 let g:SimpylFold_docstring_level = 3
@@ -211,13 +215,19 @@ let g:fastfold_fold_command_suffixes =  ['x','X','a','A','o','O','c','C']
 let g:fastfold_fold_movement_commands = [']z', '[z', 'zj', 'zk']
 
 " Options for vimpydocstring
-nmap <silent> <leader>doc :Pydocstring<CR>
-let g:pydocstring_enable_mapping = 0
+let g:pydocstring_formatter = 'google'
+nmap <leader>doc :Pydocstring<CR>
+let g:pydocstring_doq_path='/home/stannis/miniconda3/bin/doq'
 
 " Options for vimtex
 let maplocalleader=','
 let g:vimtex_fold_enabled=1
-let g:vimtex_view_automatic=0
+let g:vimtex_view_automatic=1
+let g:vimtex_compiler_progname = 'nvr'
+let g:vimtex_view_method = 'zathura'
+let g:vimtex_indent_enabled=1
+let g:tex_flavor = "latex"
+let g:vimtex_quickfix_mode=0
 
 function! VimtexHookZathura() abort
   let xwin_id = get(b:vimtex.viewer, 'xwin_id')
@@ -227,20 +237,18 @@ function! VimtexHookZathura() abort
   endif
 endfunction
 
-let g:vimtex_view_method = 'zathura'
 augroup vimtex_event_1
 au!
 au User VimtexEventView     call VimtexHookZathura()
 augroup END
-" let g:vimtex_view_general_options = '-r @line @pdf @tex'
-let g:vimtex_indent_enabled=1
 
-let g:tex_flavor = "latex"
-autocmd Filetype tex inoremap <buffer> $ $$<esc>i
+inoremap <A-f> <Esc>: silent exec '.!/home/stannis/miniconda3/bin/inkscape-figures create "'.getline('.').'" "'.b:vimtex.root.'/figures/"'<CR><CR>:w<CR>
+nnoremap <A-f> : silent exec '!/home/stannis/miniconda3/bin/inkscape-figures edit "'.b:vimtex.root.'/figures/" > /dev/null 2>&1 &'<CR><CR>:redraw!<CR>
+augroup vimrc
+  autocmd InsertEnter,InsertLeave *.tex set conceallevel=0
+augroup END
 
-" Options for vim-latex-live-preview
-" let g:livepreview_previewer = 'zathura'
-" let g:livepreview_engine = 'latexmk -pdf'
+
 
 " Options for python-mode
 let g:pymode_rope_completion=0
@@ -276,15 +284,24 @@ nmap <F8> :TagbarToggle<CR>
 let g:ale_fixers = {'python': ['black', 'isort']}
 let g:ale_linters = {'python': ['flake8'], 'yaml': ['yamllint']}
 let g:ale_fix_on_save = 1
-let g:ale_python_black_executable='/home/stannis/black/venv3/bin/black'
+let g:ale_python_black_executable='/home/stannis/miniconda3/bin/black'
 let ale_python_black_options='-S --fast'
-let g:ale_python_isort_executable='/home/stannis/black/venv3/bin/isort'
-let g:ale_python_flake8_executable='/home/stannis/ros_ws_py3/src/real_world/py3_venv/bin/flake8'
+let g:ale_python_isort_executable='/home/stannis/miniconda3/bin/isort'
+let g:ale_python_flake8_executable='/home/stannis/miniconda3/bin/flake8'
 let g:ale_python_flake8_options='--ignore=E501,W503,E203'
-let g:ale_python_mypy_executable='/home/stannis/ros_ws_py3/src/real_world/py3_venv/bin/mypy'
+let g:ale_python_mypy_executable='/home/stannis/miniconda3/mypy'
 let g:ale_yaml_yamllint_executable='/home/stannis/miniconda3/bin/yamllint'
 let g:ale_yaml_yamllint_options='-d relaxed'
 
 " Options for editing YAML files
-autocmd FileType yaml setlocal ts=4 sts=4 sw=4 expandtab
+autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
 let g:indentLine_char_list = ['|', '¦', '┆', '┊']
+
+" Options for UltiSnips
+let g:UltiSnipsExpandTrigger = '<tab>'
+let g:UltiSnipsJumpForwardTrigger = '<tab>'
+let g:UltiSnipsJumpBackwardTrigger = '<C-l>'
+let g:UltiSnipsSnippetDirectories = ['/home/stannis/Dropbox/snippets/']
+
+" Options for copilot
+let g:copilot_filetypes = {'notes': v:false}

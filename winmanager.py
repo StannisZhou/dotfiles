@@ -17,12 +17,13 @@
 #                                                                          #
 ############################################################################
 
-import commands
-import ConfigParser
 import math
 import os
 import pickle
 import sys
+
+import commands
+import ConfigParser
 
 
 def initconfig():

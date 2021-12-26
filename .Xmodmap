@@ -3,6 +3,7 @@ clear control
 remove Mod1 = Alt_R
 keycode 105 = Alt_R
 keycode 108 = Control_R
+keycode 23 = Tab
 add Control = Control_R
 add Mod1 = Alt_R
 
