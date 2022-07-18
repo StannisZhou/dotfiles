@@ -55,7 +55,7 @@ Plug 'github/copilot.vim'
 " Initialize plugin system
 call plug#end()
 
-let g:python3_host_prog='/home/stannis/miniconda3/bin/python'
+let g:python3_host_prog='/opt/conda/bin/python'
 
 
 " FVim options
@@ -123,7 +123,7 @@ autocmd FocusGained,BufEnter,CursorHold,CursorHoldI * checktime
 autocmd FileChangedShellPost * echohl WarningMsg | echo "File changed on disk. Buffer reloaded." | echohl None
 
 " Gui options
-set guifont=Monospace:h22
+set guifont=Monaco:h22
 " Some customized mappings
 nnoremap <C-s> :w<CR>
 inoremap <C-s> <Esc>:w<CR>
@@ -134,8 +134,8 @@ nnoremap <Leader>= mqgg<S-v>G=`q:delm q<CR>
 "Options for minibufexpl
 let g:miniBufExplBuffersNeeded = 1
 nnoremap <Leader>m :MBEbd<CR>
-noremap <C-PageDown> <C-W>j
-noremap <C-PageUp> <C-W>k
+noremap <C-J> <C-W>j
+noremap <C-K> <C-W>k
 noremap <C-H> <C-W>h
 noremap <C-L> <C-W>l
 
@@ -229,7 +229,7 @@ let g:fastfold_fold_movement_commands = [']z', '[z', 'zj', 'zk']
 " Options for vimpydocstring
 let g:pydocstring_formatter = 'google'
 nmap <leader>doc :Pydocstring<CR>
-let g:pydocstring_doq_path='/home/stannis/miniconda3/bin/doq'
+let g:pydocstring_doq_path='/opt/conda/bin/doq'
 
 " Options for vimtex
 let maplocalleader=','
@@ -253,13 +253,6 @@ augroup vimtex_event_1
 au!
 au User VimtexEventView     call VimtexHookZathura()
 augroup END
-
-inoremap <A-f> <Esc>: silent exec '.!/home/stannis/miniconda3/bin/inkscape-figures create "'.getline('.').'" "'.b:vimtex.root.'/figures/"'<CR><CR>:w<CR>
-nnoremap <A-f> : silent exec '!/home/stannis/miniconda3/bin/inkscape-figures edit "'.b:vimtex.root.'/figures/" > /dev/null 2>&1 &'<CR><CR>:redraw!<CR>
-augroup vimrc
-  autocmd InsertEnter,InsertLeave *.tex set conceallevel=0
-augroup END
-
 
 
 " Options for python-mode
@@ -296,13 +289,13 @@ nmap <F8> :TagbarToggle<CR>
 let g:ale_fixers = {'python': ['black', 'isort']}
 let g:ale_linters = {'python': ['flake8'], 'yaml': ['yamllint']}
 let g:ale_fix_on_save = 1
-let g:ale_python_black_executable='/home/stannis/miniconda3/bin/black'
+let g:ale_python_black_executable='/opt/conda/bin/black'
 let ale_python_black_options='-S --fast'
-let g:ale_python_isort_executable='/home/stannis/miniconda3/bin/isort'
-let g:ale_python_flake8_executable='/home/stannis/miniconda3/bin/flake8'
+let g:ale_python_isort_executable='/opt/conda/bin/isort'
+let g:ale_python_flake8_executable='/opt/conda/bin/flake8'
 let g:ale_python_flake8_options='--ignore=E501,W503,E203'
-let g:ale_python_mypy_executable='/home/stannis/miniconda3/mypy'
-let g:ale_yaml_yamllint_executable='/home/stannis/miniconda3/bin/yamllint'
+let g:ale_python_mypy_executable='/opt/conda/mypy'
+let g:ale_yaml_yamllint_executable='/opt/conda/bin/yamllint'
 let g:ale_yaml_yamllint_options='-d relaxed'
 
 " Options for editing YAML files
