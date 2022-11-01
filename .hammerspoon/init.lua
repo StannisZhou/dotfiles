@@ -25,22 +25,34 @@ end
 k:bind('', 'c', nil, cfun)
 
 vfun = function()
-  hs.application.launchOrFocusByBundleID('org.vim.MacVim')
+  bundle_id = 'com.fvim.www'
+  window = hs.window.get(hs.application.nameForBundleID(bundle_id))
+  if (window == nil) then
+    hs.application.open(bundle_id)
+  else
+    window:focus()
+  end
   k.triggered = true
 end
 k:bind('', 'v', nil, vfun)
 
 tfun = function()
-  hs.application.launchOrFocusByBundleID('com.googlecode.iterm2')
+  bundle_id = 'com.googlecode.iterm2'
+  window = hs.window.get(hs.application.nameForBundleID(bundle_id))
+  if (window == nil) then
+    hs.application.open(bundle_id)
+  else
+    window:focus()
+  end
   k.triggered = true
 end
 k:bind('', 't', nil, tfun)
 
-mfun = function()
-  hs.application.launchOrFocusByBundleID('org.texmacs.TeXmacs')
+rfun = function()
+  hs.application.launchOrFocusByBundleID('com.tinyspeck.slackmacgap')
   k.triggered = true
 end
-k:bind('', 'm', nil, mfun)
+k:bind('', 'r', nil, rfun)
 
 ofun = function()
   hs.application.launchOrFocusByBundleID('com.apple.finder')
@@ -280,10 +292,6 @@ end)
        chrome_prev_tab:disable()
        chrome_next_tab:disable()
 end)
-
--- Binding for Skim
-function fit() hs.eventtap.keyStroke({'cmd', 'shift'}, '-') end
-normal:bind({}, 's', fit, nil, fit)
 
 -- Vim style modal bindings
 
